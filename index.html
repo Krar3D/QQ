@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار الطلب والمرونة | مع الشرح (ص 1 - ص 7)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cairo & Tajawal -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-primary: #0b0f19;
+            --bg-secondary: #131b2e;
+            --bg-card: #19233c;
+            --bg-card-hover: #212e4d;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-primary: #10b981;
+            --accent-secondary: #f59e0b;
+            --border-color: rgba(255, 255, 255, 0.09);
+            --glow: rgba(16, 185, 129, 0.2);
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f1f5f9;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f8fafc;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --accent-primary: #059669;
+            --accent-secondary: #d97706;
+            --border-color: rgba(15, 23, 42, 0.1);
+            --glow: rgba(5, 150, 105, 0.15);
+        }
+
+        [data-theme="gold"] {
+            --bg-primary: #0f0c06;
+            --bg-secondary: #1c160b;
+            --bg-card: #261e0f;
+            --bg-card-hover: #332814;
+            --text-primary: #fef3c7;
+            --text-secondary: #d4b16a;
+            --accent-primary: #f59e0b;
+            --accent-secondary: #fbbf24;
+            --border-color: rgba(245, 158, 11, 0.22);
+            --glow: rgba(245, 158, 11, 0.25);
+        }
+
+        [data-theme="cyber"] {
+            --bg-primary: #090514;
+            --bg-secondary: #140b29;
+            --bg-card: #1d1138;
+            --bg-card-hover: #27174a;
+            --text-primary: #f3e8ff;
+            --text-secondary: #a855f7;
+            --accent-primary: #06b6d4;
+            --accent-secondary: #ec4899;
+            --border-color: rgba(6, 182, 212, 0.25);
+            --glow: rgba(6, 182, 212, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.35s ease, color 0.35s ease;
+            min-height: 100vh;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        .theme-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.35);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .theme-secondary {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .text-muted {
+            color: var(--text-secondary);
+        }
+
+        .accent-btn {
+            background: linear-gradient(135deg, var(--accent-primary), #047857);
+            color: #fff;
+            box-shadow: 0 4px 15px var(--glow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+        }
+
+        [data-theme="gold"] .accent-btn {
+            background: linear-gradient(135deg, #f59e0b, #b45309);
+            color: #0f0c06;
+            font-weight: 800;
+        }
+
+        [data-theme="cyber"] .accent-btn {
+            background: linear-gradient(135deg, #06b6d4, #7c3aed);
+            color: #fff;
+        }
+
+        .accent-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.08);
+        }
+
+        .accent-btn:active {
+            transform: translateY(0);
+        }
+
+        .view-window {
+            display: none;
+            animation: fadeSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .view-window.active {
+            display: block;
+        }
+
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .option-item {
+            background-color: var(--bg-secondary);
+            border: 1.5px solid var(--border-color);
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-item:hover:not(.disabled) {
+            background-color: var(--bg-card-hover);
+            border-color: var(--accent-primary);
+            transform: translateX(-4px);
+        }
+
+        .option-item.selected {
+            border-color: var(--accent-primary);
+            background-color: rgba(16, 185, 129, 0.12);
+        }
+
+        .option-item.correct {
+            border-color: #10b981 !important;
+            background-color: rgba(16, 185, 129, 0.18) !important;
+        }
+
+        .option-item.wrong {
+            border-color: #ef4444 !important;
+            background-color: rgba(239, 68, 68, 0.16) !important;
+        }
+
+        .inline-collapse {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, margin 0.3s ease, padding 0.3s ease;
+        }
+
+        .inline-collapse.open {
+            max-height: 800px;
+            opacity: 1;
+            margin-top: 1rem;
+        }
+
+        .page-badge {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            font-size: 0.75rem;
+            padding: 0.15rem 0.6rem;
+            border-radius: 999px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            white-space: nowrap;
+        }
+
+        [data-theme="light"] .page-badge {
+            background: #fef3c7;
+            color: #b45309;
+            border-color: #f59e0b;
+        }
+
+        .explanation-card {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        [data-theme="light"] .explanation-card {
+            background: #ecfdf5;
+            border-color: #6ee7b7;
+            color: #065f46;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            height: 5px;
+            width: 5px;
+        }
+        .no-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .no-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.3);
+            border-radius: 999px;
+        }
+    </style>
+</head>
+<body class="pb-12">
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-30 backdrop-blur-md bg-opacity-85 theme-secondary border-b px-2 sm:px-4 py-1.5 sm:py-2">
+        <div class="max-w-4xl mx-auto flex items-center justify-between gap-2">
+            <!-- Brand Title -->
+            <div class="flex items-center gap-2 cursor-pointer shrink-0" onclick="switchWindow('view-start')">
+                <div class="w-8 h-8 rounded-lg accent-btn flex items-center justify-center text-sm shadow-md">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <div class="leading-none">
+                    <h1 class="font-extrabold text-sm sm:text-base flex items-center gap-1.5">
+                        <span>الطلب والمرونة</span>
+                        <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">55 سؤال + الشرح</span>
+                    </h1>
+                    <p class="text-[10px] text-muted mt-0.5 hidden sm:block">استثناءات الطلب، الإيرادات والمرونة (ص 1-7) 📉</p>
+                </div>
+            </div>
+
+            <!-- Controls: Sound + Themes -->
+            <div class="flex items-center gap-1.5 shrink-0">
+                <button id="sound-btn" onclick="toggleSound()" title="تفعيل/كتم المؤثرات الصوتية" class="w-7 h-7 rounded-lg theme-card flex items-center justify-center text-xs hover:scale-105">
+                    <i id="sound-icon" class="fa-solid fa-volume-high text-emerald-400"></i>
+                </button>
+
+                <div class="flex items-center p-0.5 rounded-lg theme-card gap-0.5">
+                    <button onclick="setTheme('dark')" id="theme-dark" class="px-1.5 py-0.5 rounded text-[10px] font-bold transition-all text-muted hover:text-current" title="الوضع الليلي">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button onclick="setTheme('light')" id="theme-light" class="px-1.5 py-0.5 rounded text-[10px] font-bold transition-all text-muted hover:text-current" title="الوضع النهاري">
+                        <i class="fa-solid fa-sun"></i>
+                    </button>
+                    <button onclick="setTheme('gold')" id="theme-gold" class="px-1.5 py-0.5 rounded text-[10px] font-bold transition-all text-muted hover:text-current" title="ثيم قاعدة الذهب">
+                        <i class="fa-solid fa-coins"></i>
+                    </button>
+                    <button onclick="setTheme('cyber')" id="theme-cyber" class="px-1.5 py-0.5 rounded text-[10px] font-bold transition-all text-muted hover:text-current" title="ثيم نيون الشورجة">
+                        <i class="fa-solid fa-bolt"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto px-4 pt-6">
+
+        <!-- WINDOW 1: START & SETUP VIEW -->
+        <section id="view-start" class="view-window active">
+            <div class="theme-card rounded-3xl p-6 sm:p-8 mb-6 relative overflow-hidden">
+                <div class="absolute -left-10 -bottom-10 opacity-5 text-9xl pointer-events-none">
+                    <i class="fa-solid fa-magnifying-glass-chart"></i>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2 mb-3">
+                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                        <i class="fa-solid fa-book-open ml-1"></i> الملزمة: ص 1 إلى ص 7
+                    </span>
+                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                        <i class="fa-solid fa-graduation-cap ml-1"></i> مزود بشرح كامل لكل إجابة صحيحة
+                    </span>
+                </div>
+
+                <h2 class="text-2xl sm:text-3xl font-black mb-3 leading-snug">
+                    يا هلا بيك باختبار <span class="text-amber-400">"الطلب والمرونة"</span> 📈
+                </h2>
+                <p class="text-muted text-sm sm:text-base leading-relaxed mb-6">
+                    مستخرجين <strong>55 سؤال MCQ</strong> من أول 7 صفحات بالملزمة، تغطي سلع جيفين، سلع فيبلن، طلب السوق، وعلاقات المرونة بالإيرادات الكلية والحدية.
+                </p>
+
+                <!-- Quick Stats Cards -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+                    <div class="theme-secondary rounded-2xl p-3.5 text-center">
+                        <div class="text-amber-400 text-xl mb-1"><i class="fa-solid fa-list-check"></i></div>
+                        <div class="text-lg font-black">55 سؤال</div>
+                        <div class="text-xs text-muted">شامل لكل فقرة</div>
+                    </div>
+                    <div class="theme-secondary rounded-2xl p-3.5 text-center">
+                        <div class="text-emerald-400 text-xl mb-1"><i class="fa-solid fa-book-open-reader"></i></div>
+                        <div class="text-lg font-black">55 شرح وافي</div>
+                        <div class="text-xs text-muted">تفسير سبب الإجابة</div>
+                    </div>
+                    <div class="theme-secondary rounded-2xl p-3.5 text-center">
+                        <div class="text-sky-400 text-xl mb-1"><i class="fa-solid fa-file-lines"></i></div>
+                        <div class="text-lg font-black">ص 1 - ص 7</div>
+                        <div class="text-xs text-muted">مرقم حسب الملزمة</div>
+                    </div>
+                    <div class="theme-secondary rounded-2xl p-3.5 text-center">
+                        <div class="text-purple-400 text-xl mb-1"><i class="fa-solid fa-crown"></i></div>
+                        <div class="text-lg font-black">5 ألقاب</div>
+                        <div class="text-xs text-muted">حسب درجتك النهائية</div>
+                    </div>
+                </div>
+
+                <!-- Quiz Configuration Options -->
+                <div class="border-t border-white/10 pt-6" id="setup-container">
+                    <h3 class="text-lg font-extrabold mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-emerald-400"></i>
+                        <span>تضبيط الكعدة والاختبار (خياراتك):</span>
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <label class="theme-secondary rounded-2xl p-4 flex items-center justify-between cursor-pointer hover:border-emerald-500/40 transition-all">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center text-lg">
+                                    <i class="fa-solid fa-shuffle"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-sm sm:text-base">خربطة ترتيب الأسئلة</div>
+                                    <div class="text-xs text-muted">حتى لا تحفظهن عالتسلسل مثل الببغاء!</div>
+                                </div>
+                            </div>
+                            <input type="checkbox" id="opt-shuffle-q" class="w-5 h-5 accent-emerald-500 rounded cursor-pointer">
+                        </label>
+
+                        <label class="theme-secondary rounded-2xl p-4 flex items-center justify-between cursor-pointer hover:border-emerald-500/40 transition-all">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center text-lg">
+                                    <i class="fa-solid fa-random"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-sm sm:text-base">تغيير مكان الاختيارات</div>
+                                    <div class="text-xs text-muted">نفرّ الاختيارات (أ، ب، ج، د)</div>
+                                </div>
+                            </div>
+                            <input type="checkbox" id="opt-shuffle-a" checked class="w-5 h-5 accent-emerald-500 rounded cursor-pointer">
+                        </label>
+
+                        <label class="theme-secondary rounded-2xl p-4 flex items-center justify-between cursor-pointer hover:border-emerald-500/40 transition-all">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-sky-500/15 text-sky-400 flex items-center justify-center text-lg">
+                                    <i class="fa-solid fa-bolt-lightning"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-sm sm:text-base">تصحيح فوري + شرح</div>
+                                    <div class="text-xs text-muted">يطلعلك الشرح أول ما تختار الجواب</div>
+                                </div>
+                            </div>
+                            <input type="checkbox" id="opt-instant" checked class="w-5 h-5 accent-emerald-500 rounded cursor-pointer">
+                        </label>
+
+                        <div class="theme-secondary rounded-2xl p-4 flex flex-col justify-center">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <span class="font-bold text-sm flex items-center gap-1.5">
+                                    <i class="fa-solid fa-filter text-purple-400"></i>
+                                    حدد النطاق:
+                                </span>
+                            </div>
+                            <select id="opt-scope" class="w-full rounded-xl px-3 py-2 text-sm font-bold bg-black/25 border border-white/10 focus:outline-none focus:border-emerald-500">
+                                <option value="all">الكل (55 سؤال - من ص 1 إلى ص 7)</option>
+                                <option value="quick15">اختبار سريع عالطاير (15 سؤال)</option>
+                                <option value="quick30">نص ونص (30 سؤال)</option>
+                                <option value="p1-3">استثناءات الطلب (ص 1 - ص 3)</option>
+                                <option value="p4-5">طلب السوق (ص 4 - ص 5)</option>
+                                <option value="p6-7">الإيرادات والمرونة (ص 6 - ص 7)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button onclick="startQuiz()" class="w-full py-4 rounded-2xl accent-btn text-lg font-black flex items-center justify-center gap-3 shadow-lg">
+                        <span>يلا نبلش الاختبار (شد حيلك يالذهب!)</span>
+                        <i class="fa-solid fa-rocket"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- WINDOW 2: QUIZ VIEW -->
+        <section id="view-quiz" class="view-window">
+            <div class="theme-card rounded-2xl p-4 mb-4">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="px-3 py-1 rounded-xl bg-emerald-500/20 text-emerald-400 font-black text-sm" id="q-counter-badge"></span>
+                        <span id="q-page-badge" class="page-badge" title="رقم الصفحة في الملزمة">
+                            <i class="fa-solid fa-file-pdf"></i>
+                            <span id="q-page-text"></span>
+                        </span>
+                    </div>
+
+                    <div class="flex items-center gap-3 text-xs sm:text-sm font-bold">
+                        <span class="px-2.5 py-1 rounded-lg theme-secondary flex items-center gap-1.5 text-emerald-400" title="الإجابات الصحيحة">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span id="live-correct">0</span>
+                        </span>
+                        <span class="px-2.5 py-1 rounded-lg theme-secondary flex items-center gap-1.5 text-rose-400" title="الأخطاء/متروك">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                            <span id="live-wrong">0</span>
+                        </span>
+                        <span class="px-2.5 py-1 rounded-lg theme-secondary flex items-center gap-1.5 text-amber-400" title="الوقت المنقضي">
+                            <i class="fa-regular fa-clock"></i>
+                            <span id="live-timer">00:00</span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="w-full h-2.5 bg-black/30 rounded-full overflow-hidden mb-3">
+                    <div id="quiz-progress-bar" class="h-full bg-gradient-to-l from-emerald-400 to-teal-500 transition-all duration-300" style="width: 0%"></div>
+                </div>
+
+                <div id="q-nav-strip" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1"></div>
+            </div>
+
+            <div class="theme-card rounded-3xl p-5 sm:p-7 mb-4">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-muted" id="q-category-label"></span>
+                        <span id="q-inline-page" class="page-badge"></span>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button onclick="toggleHint()" id="hint-btn" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30 hover:bg-amber-500/25 transition-all flex items-center gap-1.5 shrink-0">
+                            <i class="fa-regular fa-lightbulb"></i>
+                            <span>تلميح عالسريع</span>
+                        </button>
+                        <button onclick="revealExplanationDirectly()" id="reveal-btn" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/25 transition-all flex items-center gap-1.5 shrink-0" title="اعرف الجواب الصحيح (يُحسب كإجابة خاطئة)">
+                            <i class="fa-solid fa-book-open"></i>
+                            <span>كشف الجواب والشرح</span>
+                        </button>
+                    </div>
+                </div>
+
+                <h2 id="q-text" class="text-lg sm:text-xl font-extrabold leading-relaxed mb-4"></h2>
+
+                <div id="hint-box" class="inline-collapse rounded-2xl bg-amber-500/10 border border-amber-500/30 px-4 py-3 text-xs sm:text-sm text-amber-300">
+                    <div class="flex items-start gap-2.5">
+                        <i class="fa-solid fa-wand-magic-sparkles text-amber-400 mt-1 text-base"></i>
+                        <div>
+                            <span class="font-extrabold block text-amber-400 mb-0.5">تغشيشة عراقية:</span>
+                            <p id="hint-text" class="leading-relaxed"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="options-container" class="space-y-3 mt-5"></div>
+
+                <div id="feedback-box" class="inline-collapse rounded-2xl overflow-hidden">
+                    <div id="feedback-header" class="px-4 py-3 flex flex-wrap items-center justify-between gap-2 border-b border-white/10">
+                        <div class="flex items-center gap-2.5 font-extrabold text-sm sm:text-base">
+                            <i id="feedback-icon" class="fa-solid fa-face-grin-stars text-xl"></i>
+                            <span id="feedback-text"></span>
+                        </div>
+                        <span id="feedback-page-ref" class="page-badge"></span>
+                    </div>
+
+                    <div class="p-4 space-y-3 text-xs sm:text-sm leading-relaxed">
+                        <div class="p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/35 flex items-start gap-2.5">
+                            <i class="fa-solid fa-circle-check text-emerald-400 text-base mt-0.5 shrink-0"></i>
+                            <div>
+                                <span class="font-black text-emerald-400 block mb-0.5">الإجابة الصحيحة المعتمدة:</span>
+                                <span id="feedback-correct-answer" class="font-bold"></span>
+                            </div>
+                        </div>
+
+                        <div class="p-3.5 rounded-xl theme-secondary border border-white/10 flex items-start gap-2.5">
+                            <i class="fa-solid fa-book-open-reader text-amber-400 text-base mt-1 shrink-0"></i>
+                            <div>
+                                <span id="explanation-title" class="font-black text-amber-400 block mb-1"></span>
+                                <p id="feedback-explanation-text" class="leading-relaxed opacity-95"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-2">
+                    <button onclick="prevQuestion()" id="btn-prev" class="px-4 py-3 rounded-2xl theme-card font-bold text-sm hover:border-emerald-500/40 flex items-center gap-2 disabled:opacity-40 disabled:pointer-events-none">
+                        <i class="fa-solid fa-arrow-right"></i>
+                        <span>السابق</span>
+                    </button>
+                    <button onclick="nextQuestion()" id="btn-next" class="px-5 py-3 rounded-2xl accent-btn font-bold text-sm flex items-center gap-2">
+                        <span id="btn-next-label">التالي</span>
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                </div>
+
+                <button onclick="finishQuiz()" class="px-4 py-3 rounded-2xl bg-rose-500/15 text-rose-400 border border-rose-500/30 hover:bg-rose-500/25 font-bold text-sm flex items-center gap-2 transition-all">
+                    <i class="fa-solid fa-flag-checkered"></i>
+                    <span>إنهاء وتسليم الدفتر</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- WINDOW 3: RESULTS VIEW -->
+        <section id="view-results" class="view-window">
+            <div class="theme-card rounded-3xl p-6 sm:p-8 text-center relative overflow-hidden mb-6">
+                <div class="max-w-lg mx-auto">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-extrabold bg-amber-500/20 text-amber-400 border border-amber-500/30 mb-4">
+                        <i class="fa-solid fa-award"></i>
+                        <span>اللقب الاقتصادي الرسمي مالتك</span>
+                    </div>
+
+                    <div id="rank-emoji" class="text-5xl sm:text-6xl mb-3"></div>
+                    <h2 id="rank-title" class="text-2xl sm:text-3xl font-black mb-2 text-amber-400"></h2>
+                    <p id="rank-desc" class="text-muted text-sm sm:text-base leading-relaxed mb-6"></p>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+                        <div class="theme-secondary rounded-2xl p-4">
+                            <div class="text-xs text-muted mb-1">النسبة المئوية</div>
+                            <div id="res-percent" class="text-2xl font-black text-emerald-400"></div>
+                        </div>
+                        <div class="theme-secondary rounded-2xl p-4">
+                            <div class="text-xs text-muted mb-1">الإجابات الصحيحة</div>
+                            <div id="res-correct" class="text-2xl font-black text-emerald-400"></div>
+                        </div>
+                        <div class="theme-secondary rounded-2xl p-4">
+                            <div class="text-xs text-muted mb-1">الأخطاء / المتروك</div>
+                            <div id="res-wrong" class="text-2xl font-black text-rose-400"></div>
+                        </div>
+                        <div class="theme-secondary rounded-2xl p-4">
+                            <div class="text-xs text-muted mb-1">الوقت المستغرق</div>
+                            <div id="res-time" class="text-2xl font-black text-amber-400"></div>
+                        </div>
+                    </div>
+
+                    <div class="theme-secondary rounded-2xl p-4 text-right mb-6">
+                        <h4 class="text-xs font-extrabold text-muted uppercase mb-3 flex items-center gap-1.5">
+                            <i class="fa-solid fa-chart-pie text-amber-400"></i>
+                            <span>تحليل مستواك حسب صفحات الملزمة:</span>
+                        </h4>
+                        <div id="page-breakdown-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs"></div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                        <button onclick="openReviewWindow('all')" class="w-full sm:w-auto flex-1 py-3.5 px-6 rounded-2xl accent-btn font-extrabold text-sm sm:text-base flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-magnifying-glass-chart"></i>
+                            <span>مراجعة الأجوبة والشرح</span>
+                        </button>
+                        <button onclick="switchWindow('view-start')" class="w-full sm:w-auto py-3.5 px-6 rounded-2xl theme-secondary hover:border-emerald-500/40 font-extrabold text-sm sm:text-base flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-rotate-right"></i>
+                            <span>إعادة الاختبار بغير إعدادات</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- WINDOW 4: DETAILED REVIEW VIEW -->
+        <section id="view-review" class="view-window">
+            <div class="theme-card rounded-2xl p-3 sm:p-4 mb-4 sticky top-[42px] sm:top-[50px] z-20 backdrop-blur-md bg-opacity-95 shadow-sm border-b sm:border-x-0 border-x-0">
+                <div class="flex flex-col gap-2 mb-2">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div class="leading-tight">
+                            <h2 class="text-sm sm:text-base font-black flex items-center gap-1.5">
+                                <i class="fa-solid fa-clipboard-check text-emerald-400"></i>
+                                <span>مراجعة الدفتر وشرح الإجابات</span>
+                            </h2>
+                            <p class="text-[10px] text-muted mt-0.5">مع شرح الملزمة (ص 1 - ص 7)</p>
+                        </div>
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            <button onclick="toggleAllReviewExplanations()" id="btn-toggle-rev-exp" class="px-2 py-1 rounded-lg bg-amber-500/15 text-amber-400 border border-amber-500/30 text-[10px] font-bold flex items-center gap-1 hover:bg-amber-500/25">
+                                <i class="fa-solid fa-book-open"></i>
+                                <span id="toggle-rev-exp-text">إخفاء الشرح</span>
+                            </button>
+                            <button onclick="switchWindow('view-results')" class="px-2 py-1 rounded-lg theme-secondary text-[10px] font-bold hover:border-emerald-500/40 flex items-center gap-1">
+                                <i class="fa-solid fa-trophy text-amber-400"></i>
+                                <span>النتيجة</span>
+                            </button>
+                            <button onclick="switchWindow('view-start')" class="px-2 py-1 rounded-lg accent-btn text-[10px] font-bold flex items-center gap-1">
+                                <i class="fa-solid fa-house"></i>
+                                <span>البداية</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 pt-2 border-t border-white/5">
+                    <div class="flex items-center gap-1 overflow-x-auto no-scrollbar pb-1 w-full sm:w-auto flex-nowrap">
+                        <button onclick="filterReview('all')" id="rev-filter-all" class="px-2 py-1 rounded-lg text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shrink-0">
+                            الكل (<span id="count-all">0</span>)
+                        </button>
+                        <button onclick="filterReview('correct')" id="rev-filter-correct" class="px-2 py-1 rounded-lg text-[10px] font-bold theme-secondary text-muted shrink-0">
+                            صحيحة ✅ (<span id="count-correct">0</span>)
+                        </button>
+                        <button onclick="filterReview('wrong')" id="rev-filter-wrong" class="px-2 py-1 rounded-lg text-[10px] font-bold theme-secondary text-muted shrink-0">
+                            خاطئة ❌ (<span id="count-wrong">0</span>)
+                        </button>
+                    </div>
+
+                    <select id="rev-page-select" onchange="filterReviewByPage(this.value)" class="w-full sm:w-auto rounded-lg px-2 py-1 text-[10px] font-bold theme-secondary focus:outline-none shrink-0">
+                        <option value="all">كل الصفحات (ص 1 - ص 7)</option>
+                        <option value="1">ص 1</option>
+                        <option value="2">ص 2</option>
+                        <option value="3">ص 3</option>
+                        <option value="4">ص 4</option>
+                        <option value="5">ص 5</option>
+                        <option value="6">ص 6</option>
+                        <option value="7">ص 7</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="review-list-container" class="space-y-4"></div>
+        </section>
+
+    </main>
+
+    <script>
+        const MASTER_QUESTIONS = [
+            {"id": 1, "page": 1, "category": "سلع جيفين", "q": "في الظروف الاعتيادية، كيف يستجيب الفرد باتجاه التغير في سعر السلعة حسب قانون الطلب؟", "options": ["باتجاه معاكس", "باتجاه طردي", "بثبات تام", "باتجاه عشوائي"], "correct": 0, "hint": "قانون الطلب العادي: السعر يصعد، الطلب ينزل (علاقة عكسية).", "explanation": "حسب ص 1[cite: 2]، يستجيب الفرد باتجاه معاكس لاتجاه التغير في سعر السلعة في الظروف الاعتيادية."},
+            {"id": 2, "page": 1, "category": "سلع جيفين", "q": "من هو الاقتصادي الذي أثبت في القرن التاسع عشر وجود استثناء لبعض السلع الغذائية الخاصة بالفقراء من قانون الطلب؟", "options": ["آدم سميث", "كينز", "جيفين", "فيبلن"], "correct": 2, "hint": "اسمه على اسم السلع الدنيا (سلع جيفين).", "explanation": "في ص 1[cite: 2]، أثبت الاقتصادي البريطاني 'جيفين' أن بعض السلع الغذائية الخاصة بالفقراء يتصرف الأفراد تجاهها على النقيض من قانون الطلب."},
+            {"id": 3, "page": 1, "category": "سلع جيفين", "q": "أي من السلع التالية تُعد مثالاً على 'السلعة الدنيا' (سلعة جيفين)؟", "options": ["الجواهر الثمينة", "رغيف الخبز أو وجبة الفلافل", "السيارات الفاخرة", "التحف الفنية النادرة"], "correct": 1, "hint": "شغلات رخيصة يعتمد عليها الفقير بحياته اليومية.", "explanation": "حسب ص 1[cite: 2]، من أمثلتها سلع الغذاء الأساسي الرخيصة مثل رغيف الخبز أو وجبة الفلافل والملابس المستعملة البسيطة."},
+            {"id": 4, "page": 1, "category": "سلع جيفين", "q": "لماذا يؤدي انخفاض سعر السلعة الدنيا إلى تراجع الكمية المطلوبة منها من قبل المستهلك الفقير؟", "options": ["لأن جودتها تنخفض مع السعر", "لأنه سيستغل القدرة الشرائية الإضافية لشراء سلع أفضل", "لأنه سيفقد الاهتمام بها تماماً", "لأن السلع الدنيا تخضع للضريبة"], "correct": 1, "hint": "من ترخص الفلافل، الفقير يصير عنده كم فلس زايد يروح يشتري بيهم كص (سلع أفضل).", "explanation": "توضح ص 1[cite: 2] أن المستهلك سيستغل القدرة الشرائية الإضافية التي تحققت من انخفاض سعر السلعة الدنيا في زيادة الكميات التي يطلبها من السلع الأفضل، فتتراجع الكمية المطلوبة من السلعة الدنيا."},
+            {"id": 5, "page": 1, "category": "سلع جيفين", "q": "ماذا يحدث لميزانية المستهلك الفقير إذا ارتفع سعر السلعة الدنيا؟", "options": ["تزيد قدرته الشرائية الحقيقية", "يقلص من قدرته الشرائية الحقيقية ويجبره على الاستعاضة عن السلع الاعتيادية بالسلعة الدنيا", "يشتري سلعاً كمالية أكثر", "لا تتأثر ميزانيته إطلاقاً"], "correct": 1, "hint": "من يغلى الخبز، الفقير يعوف اللحم ويشتري خبز أكثر حتى يسد جوعه.", "explanation": "في ص 1[cite: 2]، ارتفاع سعر السلعة الدنيا يقلص القدرة الشرائية للفقير، فيجد أنه من الأفضل أن يُحل السلعة الدنيا محل السلع الاعتيادية لتلبية احتياجاته في حدود دخله."},
+            {"id": 6, "page": 1, "category": "سلع جيفين", "q": "كيف يمكن التعبير بيانياً عن منحنى الطلب للسلعة الدنيا؟", "options": ["منحنى يبدأ من أعلى اليسار وينحدر لليمين", "منحنى أفقي تماماً", "منحنى عمودي تماماً", "منحنى مناقض يبدأ من أسفل اليسار ويتصاعد لليمين"], "correct": 3, "hint": "عكس قانون الطلب العادي، يعني علاقة طردية (يصعد لي فوك).", "explanation": "تذكر ص 1[cite: 2] أن حالة السلعة الدنيا يُعبر عنها بيانياً بمنحنى طلب مناقض يبدأ من أسفل اليسار ويتصاعد لليمين."},
+            {"id": 7, "page": 1, "category": "سلع جيفين", "q": "ما هي طبيعة العلاقة بين دخول الأفراد (زيادة الدخل) والكميات المطلوبة من السلع الدنيا؟", "options": ["علاقة طردية", "علاقة عكسية", "لا توجد علاقة", "علاقة متكافئة"], "correct": 1, "hint": "من يصير عندك راتب زين، تعوف البالات (عكسية).", "explanation": "في ص 1[cite: 2]، تتحول العلاقة بين دخول الأفراد والكميات المطلوبة من السلع الدنيا إلى علاقة عكسية، فزيادة الدخل تقلل الطلب عليها."},
+            {"id": 8, "page": 1, "category": "سلع جيفين", "q": "إذا زاد دخل الفقراء، فكيف سيتصرفون تجاه 'الملابس المستعملة' (كسلعة دنيا)؟", "options": ["سيطلبون كميات أكبر منها", "لن يغيروا من استهلاكهم", "سيخفضون الكميات المطلوبة منها ويشترون ملابس جديدة", "سيبدأون بتصديرها"], "correct": 2, "hint": "القدرة الشرائية تتحسن، فيعوفون القديم ويشترون جديد.", "explanation": "حسب ص 1 و 2[cite: 2, 3]، زيادة دخول الفقراء لا تقود لزيادة طلبهم للملابس المستعملة بل تخفيضها والاستعاضة عنها بالسلع الاعتيادية (الجديدة)."},
+            {"id": 9, "page": 2, "category": "سلع المباهاة", "q": "من هم الأفراد المعنيون باستثناء 'السلع الاستفزازية' (سلع المباهاة) من قانون الطلب؟", "options": ["الفقراء ذوي الدخل المنخفض", "الأغنياء من ذوي الدخول المرتفعة", "الطبقة المتوسطة فقط", "المنتجون للسلع الدنيا"], "correct": 1, "hint": "هذوله اللي يحبون يتفاخرون بالفلوس وتكشخون.", "explanation": "في ص 2[cite: 3]، يتصل هذا الاستثناء بسلوك الأغنياء من ذوي الدخول المرتفعة تجاه سلع المباهاة والتفاخر."},
+            {"id": 10, "page": 2, "category": "سلع المباهاة", "q": "بماذا تُعرف السلع الاستفزازية باللغة الإنجليزية في الاقتصاد؟", "options": ["Giffen Goods", "Veblen Goods", "Normal Goods", "Inferior Goods"], "correct": 1, "hint": "سلع فيبلن (Veblen).", "explanation": "كما ورد في عنوان الفقرة (ب) في ص 2[cite: 3]: السلع الاستفزازية أو سلع المباهاة (Veblen Goods)."},
+            {"id": 11, "page": 2, "category": "سلع المباهاة", "q": "لماذا تؤدي زيادة أسعار سلع المباهاة (كالجواهر والتحف) إلى زيادة الكميات المطلوبة منها؟", "options": ["لأنها تصبح أرخص من السلع الأخرى", "لأن جودتها تتحسن تلقائياً", "لأنها تكسب قدرة أفضل على استفزاز مشاعر الآخرين وتصبح مدعاة للمباهاة أكثر", "لأن الحكومات تدعمها"], "correct": 2, "hint": "كلما غلت، كلما زادت كشختها كدام العالم.", "explanation": "في ص 2[cite: 3]، ارتفاع الأسعار يكسبها قدرة أفضل على استفزاز المشاعر وتكون مدعاة للمباهاة أكثر، لذا يزداد الطلب عليها."},
+            {"id": 12, "page": 2, "category": "سلع المباهاة", "q": "إذا انخفضت أسعار سلع المباهاة، ماذا يحدث للكمية المطلوبة منها من قبل الأغنياء؟", "options": ["تزداد بشكل كبير", "تنخفض لأنها تفقد بعض قدرتها على الاستفزاز والمباهاة", "تبقى ثابتة", "تتحول إلى سلع جيفين"], "correct": 1, "hint": "من ترخص، تصير مو مال 'زناكين'، فيعوفوها.", "explanation": "حسب ص 2[cite: 3]، انخفاض أسعارها يؤدي لتخفيض الكميات المطلوبة لأنها ستفقد قدرتها على الاستفزاز والمباهاة."},
+            {"id": 13, "page": 2, "category": "سلع المباهاة", "q": "ما هي طبيعة العلاقة بين 'دخول الأفراد الأغنياء' والكميات المطلوبة من سلع المباهاة؟", "options": ["علاقة عكسية", "علاقة طردية (تظل سارية كما في السلع الاعتيادية)", "لا توجد علاقة إطلاقاً", "علاقة صفرية"], "correct": 1, "hint": "من يزيد دخلهم، يشترون تحف أكثر.. يعني طردية حالها حال السلع العادية.", "explanation": "في ص 2[cite: 3]، زيادة دخول الأغنياء تؤدي لزيادة الطلب على سلع المباهاة، أي أن العلاقة الطردية تظل سارية كما في علاقة الدخل بالسلع الاعتيادية."},
+            {"id": 14, "page": 2, "category": "توقعات الأسعار", "q": "إذا ارتفع سعر السلعة (ص) بنسبة 7%، ولكن المستهلكين تشكلت لديهم قناعات تشاؤمية بأن سعرها سيرتفع قريباً بنسبة 60%، ماذا سيحدث للطلب الحالي؟", "options": ["سيقل الطلب الحالي بشكل كبير", "سيزداد الطلب (الكمية المطلوبة) حالياً", "سيتوقف الطلب تماماً", "سينتظر المستهلكون انخفاض السعر"], "correct": 1, "hint": "الناس تخاف يغلى بعد أكثر، فيروحون يركضون يشترون هسة (زيادة الطلب رغم ارتفاع السعر).", "explanation": "في ص 2[cite: 3]، الارتفاع الأولي لن يؤدي لتخفيض الكمية المطلوبة بل سيزيدها بسبب التوقعات التشاؤمية بحصول ارتفاع أكبر."},
+            {"id": 15, "page": 2, "category": "توقعات الأسعار", "q": "في حالة التوقعات التشاؤمية بارتفاع الأسعار مستقبلاً، يكون هذا التوجه لزيادة الطلب الحالي (أكثر وضوحاً) في حالة:", "options": ["السلع سريعة التلف فقط", "الخدمات الطبية", "السلع القابلة للخزن", "السلع الرقمية"], "correct": 2, "hint": "تكدر تشتري منها كومة وتضمها بالمخزن قبل لا يغلى سعرها.", "explanation": "حسب ص 2[cite: 3]، يكون هذا التوجه أكثر وضوحاً إذا كانت السلعة قابلة للخزن، وأقل وضوحاً إذا كانت سريعة التلف."},
+            {"id": 16, "page": 2, "category": "توقعات الأسعار", "q": "إذا انخفض سعر سلعة بنسبة 8% وتوقع الأفراد أن سعرها سينخفض بنسبة أكبر مستقبلاً، فإن الانخفاض الأولي سيؤدي إلى:", "options": ["زيادة الكمية المطلوبة فوراً", "تخفيض الكمية المطلوبة (انخفاض الطلب الحالي)", "شراء كل الكمية المعروضة بالسوق", "ارتفاع سعرها مجدداً"], "correct": 1, "hint": "الناس تكول 'خلي ننتظر بعد ترخص أكثر'، فما يشترون هسة.", "explanation": "في ص 2[cite: 3]، التوقعات بانخفاض أكبر تجعل الانخفاض الأولي لن يؤدي لزيادة الطلب بل إلى تخفيضه (نقصان الكمية المطلوبة)."},
+            {"id": 17, "page": 4, "category": "طلب السوق", "q": "ما هو 'طلب السوق' من أية سلعة؟", "options": ["طلب الفرد الواحد الذي يملك أعلى دخل", "مجموع الكميات المختلفة التي يطلبها كافة الأفراد المستهلكين من السلعة عند المستويات السعرية المختلفة", "الكمية التي يعرضها المنتجون فقط", "الكميات المطلوبة عند سعر التوازن فقط"], "correct": 1, "hint": "طلب السوق يعني تجمع كل الطلبات مال كل الناس الموجودين بالسوك.", "explanation": "كما مُعرّف في ص 4[cite: 5]، طلب السوق يمثل مجموع الكميات المختلفة التي يطلبها كافة الأفراد المستهلكين من تلك السلعة."},
+            {"id": 18, "page": 4, "category": "طلب السوق", "q": "في الجدول الافتراضي، عندما كان السعر (1000) دينار، كان المستهلك (1) يطلب وحدة واحدة، والمستهلكان (2) و (3) لا يطلبان شيئاً. كم يبلغ طلب السوق عند هذا السعر؟", "options": ["3 وحدات", "0 وحدة", "وحدة واحدة (1)", "2 وحدة"], "correct": 2, "hint": "اجمع طلبهم: 1 + 0 + 0 = 1", "explanation": "حسب جدول (1) في ص 4[cite: 5]، طلب السوق هو مجموع طلب الأفراد، أي (1) وحدة."},
+            {"id": 19, "page": 4, "category": "طلب السوق", "q": "في نفس الجدول، عندما انخفض السعر إلى (600) دينار، أصبح طلب المستهلك (1) هو 3 وحدات، والمستهلك (2) وحدتين، والمستهلك (3) وحدة واحدة. كم أصبح طلب السوق؟", "options": ["4 وحدات", "6 وحدات", "5 وحدات", "9 وحدات"], "correct": 1, "hint": "3 + 2 + 1 = 6 وحدات.", "explanation": "في ص 4[cite: 5]، طلب السوق يتغير بالزيادة ليصبح مجموعهم (6) وحدات عند سعر 600 دينار."},
+            {"id": 20, "page": 5, "category": "منحنى طلب السوق", "q": "كيف يتم استنتاج منحنى طلب السوق لسلعة معينة؟", "options": ["من خلال معرفة منحنيات العرض", "بضرب الأسعار في الكميات", "من خلال التجميع (جمع) منحنيات الطلب الفردي لكافة الأفراد على نفس السلعة", "بقسمة الدخل على السعر"], "correct": 2, "hint": "تجمع المنحنيات مال أفراد السوك كلهم (تجميع أفقي).", "explanation": "في ص 5[cite: 6]، من الممكن التوصل إلى منحنى طلب السوق من خلال معرفة منحنيات الطلب الفردي، فهو يمثل مجموع طلب الأفراد."},
+            {"id": 21, "page": 5, "category": "الإيراد الكلي", "q": "ما هي المعادلة الرياضية لحساب 'الإيراد الكلي' (TR)؟", "options": ["TR = Q + P", "TR = Q / P", "TR = Q - P", "TR = Q × P"], "correct": 3, "hint": "الإيراد هو الكمية المباعة مضروبة بسعر الوحدة.", "explanation": "في ص 5[cite: 6]، الإيراد الكلي (TR) يمثل حاصل ضرب الكمية المطلوبة (Q) في سعر وحدة السلعة (P)."},
+            {"id": 22, "page": 5, "category": "الإيراد الكلي", "q": "الإيراد الكلي (TR) الذي يحصل عليه المشروع هو نفسه:", "options": ["التكاليف الكلية للمشروع", "حجم الإنفاق الكلي الذي يقوم به المستهلكون", "الإيراد الحدي (MR)", "الأرباح الصافية"], "correct": 1, "hint": "الفلوس اللي تدخل بجيب البائع هي نفسها الفلوس اللي دفعها المشتري.", "explanation": "في ص 5[cite: 6]، يُذكر بوضوح أن الإيراد الكلي الذي يحصل عليه المشروع هو نفسه حجم الإنفاق الكلي الذي يقوم به المستهلكون."},
+            {"id": 23, "page": 5, "category": "علاقة المرونة بالإيراد", "q": "إذا كان الطلب 'عالي المرونة' (Ed > 1)، فإن ارتفاع السعر يؤدي إلى:", "options": ["انخفاض الإيراد الكلي (TR)", "ارتفاع الإيراد الكلي (TR)", "ثبات الإيراد الكلي", "زيادة الكمية المطلوبة"], "correct": 0, "hint": "عالي المرونة يعني الناس راح تشرد من يغلى السعر هواي، فالكمية تنزل أكثر من صعود السعر، والإيراد يقل.", "explanation": "حسب ص 5[cite: 6]، في حالة الطلب عالي المرونة، ارتفاع السعر يؤدي إلى انخفاض الإيراد الكلي لأن التغير في الكمية يكون أكبر من التغير في السعر."},
+            {"id": 24, "page": 5, "category": "علاقة المرونة بالإيراد", "q": "في الطلب عالي المرونة، السعر كان (4) والكمية (4) فأصبح الإيراد 16. إذا ارتفع السعر إلى (5) وانخفضت الكمية إلى (2)، كم يصبح الإيراد الكلي؟ وهل انخفض أم ارتفع؟", "options": ["20 (ارتفع)", "10 (انخفض)", "7 (انخفض)", "16 (ثابت)"], "correct": 1, "hint": "اضرب 5 × 2 = 10.. جان 16 وصار 10 يعني انخفض.", "explanation": "في الجدول (حالة 1 ص 5)[cite: 6]، TR = 5 * 2 = 10، وبالتالي انخفض الإيراد الكلي من 16 إلى 10 مع ارتفاع السعر."},
+            {"id": 25, "page": 5, "category": "علاقة المرونة بالإيراد", "q": "إذا كان الطلب 'قليل المرونة' (Ed < 1)، فإن العلاقة بين السعر والإيراد الكلي تكون:", "options": ["علاقة عكسية", "الإيراد ثابت", "علاقة طردية (ارتفاع السعر يؤدي لارتفاع الإيراد)", "لا توجد علاقة"], "correct": 2, "hint": "قليل المرونة يعني الناس مجبورين يشترون، فإذا رفعت السعر، راح تربح أكثر (الإيراد يصعد).", "explanation": "في ص 5[cite: 6] (الطلب قليل المرونة)، ارتفاع السعر يؤدي لارتفاع الإيراد الكلي، وانخفاضه يؤدي لانخفاض الإيراد (علاقة طردية)."},
+            {"id": 26, "page": 5, "category": "علاقة المرونة بالإيراد", "q": "في الطلب قليل المرونة، لماذا يؤدي انخفاض السعر إلى انخفاض الإيراد الكلي؟", "options": ["لأن التغير بالكمية المطلوبة أقل من التغير بالسعر", "لأن التغير بالكمية المطلوبة أكبر من التغير بالسعر", "لأن الكمية لا تتغير أبداً", "لأن المستهلكين يتوقفون عن الشراء"], "correct": 0, "hint": "من تنزل السعر، الزبائن ما يزيدون هواي (استجابتهم ضعيفة)، فخسارتك بالسعر أكبر من ربحك بالكمية.", "explanation": "حسب ص 5 و 6[cite: 6, 7]، لأن التغير في الكمية المطلوبة أقل من التغير في السعر."},
+            {"id": 27, "page": 6, "category": "علاقة المرونة بالإيراد", "q": "إذا كان الطلب 'أحادي (متكافئ) المرونة' (Ed = 1)، فإن تغير السعر (ارتفاعاً أو انخفاضاً) يؤدي إلى:", "options": ["تغير كبير في الإيراد", "لا يؤدي إلى تغير الإيراد الكلي (ثبات TR)", "انخفاض الإيراد دائماً", "ارتفاع الإيراد دائماً"], "correct": 1, "hint": "متكافئ يعني اللي تخسره بالسعر تعوضه بالكمية بالضبط، فالإيراد يبقى نفسه.", "explanation": "في ص 6[cite: 7]، ارتفاع أو انخفاض السعر لا يؤدي إلى تغير الإيراد الكلي، لأن التغير بالكمية يساوي التغير بالسعر."},
+            {"id": 28, "page": 6, "category": "علاقة المرونة بالإيراد", "q": "في الطلب عديم المرونة (Ed = 0)، ماذا يحدث للكمية المطلوبة إذا تغير السعر؟", "options": ["تتغير بنسبة أكبر", "تتغير بنسبة أقل", "الكمية المطلوبة ثابتة ولا تستجيب للتغير في السعر", "تتغير بنفس النسبة"], "correct": 2, "hint": "عديم المرونة يعني صفر استجابة، الكمية مجمدة مثل الدواء الضروري.", "explanation": "حسب ص 6[cite: 7]، الطلب عديم المرونة يعني أن الكمية المطلوبة ثابتة ولا تستجيب للتغير في السعر."},
+            {"id": 29, "page": 6, "category": "علاقة المرونة بالإيراد", "q": "في الطلب 'عديم المرونة'، إذا ارتفع السعر، فإن الإيراد الكلي (TR):", "options": ["ينخفض", "يرتفع", "يبقى ثابتاً", "يصبح صفراً"], "correct": 1, "hint": "بما انه الكمية ثابته، فكلما ترفع السعر، الايراد يصعد وياه.", "explanation": "في ص 6[cite: 7]، بما أن الكمية ثابتة، فإن ارتفاع السعر يؤدي حتماً إلى ارتفاع الإيراد الكلي."},
+            {"id": 30, "page": 6, "category": "علاقة المرونة بالإيراد", "q": "حالة الطلب 'لانهائي المرونة' (Ed = ∞) تفترض ببساطة أن:", "options": ["الأفراد يشترون كمية ثابتة مهما كان السعر", "ارتفاع السعر ولو قليلاً يؤدي إلى انخفاض الإيراد الكلي إلى الصفر", "المشروع لا يحقق أي إيراد مطلقاً", "السعر ثابت والكمية ثابتة"], "correct": 1, "hint": "لانهائي يعني الناس حساسة لدرجة إذا ترفع السعر فلس واحد، يعوفوك ويروحون لغيرك ومبيعاتك تصير صفر.", "explanation": "في ص 6[cite: 7]، ارتفاع السعر يؤدي إلى انخفاض الإيراد الكلي إلى الصفر لأن الكمية تستجيب بصورة لا نهائية (المستهلكون يتركون السلعة تماماً)."},
+            {"id": 31, "page": 6, "category": "علاقة المرونة بالإيراد", "q": "في حالة الطلب اللانهائي المرونة (Ed = ∞)، ماذا يحدث للإيراد إذا انخفض السعر؟", "options": ["ينخفض للصفر", "يرتفع بصورة لا نهائية", "يبقى ثابتاً", "يرتفع بنسبة 1% فقط"], "correct": 1, "hint": "من ترخص، كل العالم راح تشتري من عندك (زيادة لا نهائية).", "explanation": "حسب ص 6 و 7[cite: 7, 8]، انخفاض السعر يؤدي إلى ارتفاع الإيراد بصورة لا نهائية."},
+            {"id": 32, "page": 6, "category": "علاقة المرونة بالإيراد", "q": "لماذا يسعى المشروع الإنتاجي لمعرفة مرونة الطلب السعرية؟", "options": ["لدفع الضرائب", "لمعرفة ما إذا كان رفع أو خفض السعر سيؤدي لزيادة الإيراد الكلي أو تخفيضه لغرض تعظيم مبيعاته", "لتغيير نوع السلعة", "لتقليل العمالة"], "correct": 1, "hint": "حتى يعرف من يغير السعر راح يربح لو يخسر إيرادات.", "explanation": "في ص 6[cite: 7]، بما أن المشروع يسعى لتعظيم الإيراد الكلي، فإنه يرغب بمعرفة أثر تغير السعر، وفكرة المرونة توفر الإجابة."},
+            {"id": 33, "page": 7, "category": "الإيراد الحدي", "q": "كيف يُعَرَّف 'الإيراد الحدي' (Marginal Revenue)؟", "options": ["السعر مقسوماً على الكمية", "التغير في الإيراد الكلي مقسوماً على التغير المقابل في الناتج (الكمية)", "الإيراد الكلي مطروحاً منه التكاليف", "حاصل ضرب السعر في الكمية"], "correct": 1, "hint": "الحدي (Marginal) دائماً يعني 'التغير بـ' الفوك مقسوم على 'التغير بـ' الجوة.", "explanation": "في ص 7[cite: 8]، الإيراد الحدي يمثل التغير في الإيراد الكلي مقسوماً على التغير المقابل في الناتج."},
+            {"id": 34, "page": 7, "category": "الإيراد الحدي", "q": "في ظروف المنافسة التامة، يستطيع المشروع بيع أي وحدات إضافية بالسعر السائد، أي أن التغير في السعر يساوي صفراً. في هذه الحالة، الإيراد الحدي يساوي:", "options": ["صفراً", "الإيراد الكلي", "سعر وحدة السلعة (MR = P)", "المرونة"], "correct": 2, "hint": "بالمنافسة التامة، السعر ثابت، فكل وحدة جديدة تبيعها تجيبلك إيراد بقد سعرها بالضبط.", "explanation": "حسب ص 7[cite: 8]، عندما يكون التغير في السعر صفراً، يصبح الإيراد الحدي هو نفسه سعر وحدة السلعة."},
+            {"id": 35, "page": 7, "category": "الإيراد الحدي", "q": "في حالات السوق (خارج المنافسة التامة)، عندما يلجأ المشروع لتخفيض السعر لزيادة المبيعات، ما هي العلاقة بين السعر (P) والإيراد الحدي (MR)؟", "options": ["P = MR", "P < MR", "P > MR (السعر أكبر من الإيراد الحدي)", "لا علاقة بينهما"], "correct": 2, "hint": "من تنزل السعر حتى تبيع أكثر، الإيراد اللي يجيك من الوحدة الأخيرة راح يكون أقل من السعر، لأنك خفضت السعر على كل الوحدات.", "explanation": "في ص 7[cite: 8]، خارج المنافسة التامة، ما دام المشروع يلجأ لتخفيض السعر، فإن السعر يصبح أكبر من الإيراد الحدي (P > MR)."},
+            {"id": 36, "page": 7, "category": "الإيراد الحدي", "q": "ما هي الصيغة الرياضية التي تربط الإيراد الحدي (MR) بمرونة الطلب السعرية (Ed) والسعر (P)؟", "options": ["MR = P [1 - Ed]", "MR = P [1 - (1 / Ed)]", "MR = P / Ed", "MR = Ed [1 - P]"], "correct": 1, "hint": "تذكر القوس اللي بيه كسر: واحد ناقص (واحد على المرونة).", "explanation": "الصيغة النهائية في ص 7[cite: 8] هي: MR = P [1 - (1 / Ed)]."},
+            {"id": 37, "page": 7, "category": "الإيراد الحدي", "q": "إذا كان الطلب مرناً (Ed > 1)، فما هي إشارة الإيراد الحدي (MR)؟", "options": ["سالب (MR < 0)", "صفر (MR = 0)", "موجب (MR > 0)", "لا نهائي"], "correct": 2, "hint": "بما انه المرونة أكبر من 1، فالكسر (1/Ed) يصير أقل من 1، فالناتج داخل القوس موجب.", "explanation": "في ص 7[cite: 8]، إذا كان الطلب مرن فإن الإيراد الحدي موجب (MR > 0)."},
+            {"id": 38, "page": 7, "category": "الإيراد الحدي", "q": "إذا كان السعر (P) = 4، والمرونة (Ed) = 2. كم يبلغ الإيراد الحدي (MR) باستخدام المعادلة MR = P[1-(1/Ed)]؟", "options": ["2", "4", "-2", "0"], "correct": 0, "hint": "MR = 4 * (1 - 1/2) = 4 * (0.5) = 2", "explanation": "حسب التطبيق الرياضي في ص 7 و 8[cite: 8]، MR = 4 (1 - 0.5) = 2."},
+            {"id": 39, "page": 7, "category": "الإيراد الحدي", "q": "إذا كان الطلب متكافئ المرونة (Ed = 1)، فما هي قيمة الإيراد الحدي (MR)؟", "options": ["سالب", "صفر (MR = 0)", "موجب", "1"], "correct": 1, "hint": "MR = P * (1 - 1/1) = P * 0 = صفر.", "explanation": "في ص 8[cite: 8]، إذا كان Ed=1 فإن الإيراد الحدي موجب (يقصد رياضياً يصل للصفر) MR=0."},
+            {"id": 40, "page": 7, "category": "الإيراد الحدي", "q": "إذا كان الطلب قليل المرونة (Ed < 1)، فإن الإيراد الحدي يكون:", "options": ["موجباً (MR > 0)", "صفراً", "سالباً (MR < 0)", "مساوياً للسعر"], "correct": 2, "hint": "من تصير المرونة كسر أقل من 1، (1/Ed) يصير أكبر من 1، فتطرح 1 ناقص رقم كبير يطلع سالب.", "explanation": "في ص 8[cite: 8]، إذا كان الطلب قليل مرونة (Ed < 1) فإن الإيراد الحدي سالب (MR < 0)."},
+            {"id": 41, "page": 7, "category": "الإيراد الحدي", "q": "احسب الإيراد الحدي (MR) إذا كان السعر P=4 والمرونة Ed=0.2؟", "options": ["16", "-16", "-4", "20"], "correct": 1, "hint": "1 تقسيم 0.2 = 5. (1 - 5) = -4. اضرب -4 في 4 = -16.", "explanation": "وفقاً للحسابات في ص 8[cite: 8]، MR = 4 [1 - (1/0.2)] = 4 [1 - 5] = 4 * (-4) = -16."},
+            {"id": 42, "page": 7, "category": "مرونة القوس", "q": "متى تُستخدم 'مرونة القوس' (Arc Elasticity) في التحليل الاقتصادي؟", "options": ["لتحديد سعر التوازن فقط", "لقياس المرونة عند نقطة واحدة فقط", "لقياس المرونة بين نقطتين محددتين على منحنى طلب معين وتستخدم للتغيرات الكبيرة", "لحساب التكاليف الثابتة"], "correct": 2, "hint": "قوس يعني مسافة بين نقطتين، وتفيدنا من يصير تغير جبير بالسعر.", "explanation": "في ص 8[cite: 8]، تمثل مرونة القوس قياس المرونة بين نقطتين محددتين على منحنى طلب معين وتستخدم للتغيرات الكبيرة."},
+            {"id": 43, "page": 7, "category": "مرونة القوس", "q": "في صيغة مرونة القوس المستخدمة في الملزمة: Ed = (ΔQd / ΔP) × (P1 / Q1)، يمثل (ΔQd):", "options": ["السعر الجديد", "الكمية المطلوبة القديمة", "التغير في الكمية المطلوبة (Q2 - Q1)", "التغير في السعر"], "correct": 2, "hint": "المثلث (ديلتا) دائماً يعني التغير (الثاني ناقص الأول).", "explanation": "حسب ص 8[cite: 8]، (ΔQd) هي Q2 - Q1."},
+            {"id": 44, "page": 7, "category": "مرونة القوس", "q": "في المثال: النقطة (j) حيث P1=20 و Q1=43، والنقطة (k) حيث P2=10 و Q2=75. ما هو التغير في الكمية (ΔQd)؟", "options": ["-10", "43", "32", "75"], "correct": 2, "hint": "75 ناقص 43 = 32", "explanation": "حسب جدول التغير في ص 8[cite: 8]، Q2 - Q1 = 75 - 43 = 32."},
+            {"id": 45, "page": 7, "category": "مرونة القوس", "q": "في نفس المثال (P1=20, P2=10)، ما هو التغير في السعر (ΔP)؟", "options": ["10", "-10", "30", "20"], "correct": 1, "hint": "10 ناقص 20 = -10 (لأن السعر انخفض).", "explanation": "في ص 8[cite: 8]، P2 - P1 = 10 - 20 = -10."},
+            {"id": 46, "page": 7, "category": "مرونة القوس", "q": "بتطبيق أرقام المثال: Ed = (32 / -10) × (20 / 43)، كم تبلغ مرونة القوس؟", "options": ["-1.49", "1.49", "-0.5", "2.0"], "correct": 0, "hint": "البسط 640 والمقام -430، القسمة تطلع -1.49.", "explanation": "حسب حل المثال في ص 8[cite: 8]، (640 / -430) = -1.49."},
+            {"id": 47, "page": 7, "category": "مرونة القوس", "q": "ماذا يعني تفسير معامل المرونة (Ed = -1.49)؟", "options": ["أن الطلب عديم المرونة", "أن انخفاضاً قدره 1% في السعر ينجم عنه زيادة مقدارها 1.49% في الطلب", "أن زيادة السعر تزيد الإيرادات", "أن العلاقة طردية"], "correct": 1, "hint": "الرقم 1.49 يعني استجابة الكمية أكبر من تغير السعر (1%).", "explanation": "في التعليق في ص 8[cite: 8]، يعني أن انخفاضاً قدره 1% في السعر ينجم عنه زيادة مقدارها 1.49% في الطلب."},
+            {"id": 48, "page": 5, "category": "طلب السوق", "q": "منحنى طلب السوق هو تجميع ...... لمنحنيات الطلب الفردي.", "options": ["عمودي", "رأسي", "أفقي (تجميع الكميات عند نفس السعر)", "قطري"], "correct": 2, "hint": "نجمع الكميات (المحور الأفقي Q) لكل الأسعار المقابلة.", "explanation": "المنطق في جدول ص 4 و 5[cite: 5, 6] يوضح أننا نجمع الكميات (Q) عند مستويات سعرية (P) ثابتة، وهذا يسمى التجميع الأفقي."},
+            {"id": 49, "page": 2, "category": "الاستثناءات", "q": "أي من الاستثناءات التالية يلغي العلاقة العكسية بين السعر والكمية (قانون الطلب) ويجعلها طردية؟", "options": ["السلع الدنيا (جيفين) فقط", "سلع المباهاة (فيبلن) فقط", "توقعات الأسعار المستقبلية فقط", "جميع ما سبق"], "correct": 3, "hint": "كل هاي الحالات المذكورة بالملزمة السعر يصعد والطلب يصعد (أو العكس)، يعني تكسر قانون الطلب.", "explanation": "في ص 1 و 2[cite: 2, 3]، جميع هذه الحالات (جيفين، فيبلن، التوقعات) هي استثناءات يتصرف فيها الفرد بشكل مناقض لقانون الطلب (علاقة طردية بدلاً من عكسية)."},
+            {"id": 50, "page": 6, "category": "الإيرادات", "q": "بناءً على جدول المرونات، إذا كان هدفك زيادة مبيعاتك (الإيراد الكلي) وكان الطلب على سلعتك 'قليل المرونة'، فما هو القرار الصحيح؟", "options": ["تخفيض السعر", "زيادة السعر", "تثبيت السعر", "زيادة الإنتاج بأسعار رخيصة"], "correct": 1, "hint": "قليل المرونة يعني الزبون ما يكدر يعوفك بسهولة، فمن ترفع السعر راح تجيك فلوس أكثر.", "explanation": "في ص 6 و 7 (جدول 2)[cite: 7]، للطلب قليل المرونة، ارتفاع السعر يؤدي إلى ارتفاع الإيراد الكلي."},
+            {"id": 51, "page": 1, "category": "سلع جيفين", "q": "لماذا تم ربط السلع الدنيا بكلمة 'الرديئة' في بعض الأحيان؟", "options": ["لأنها منتهية الصلاحية", "لأنها تالفة دائماً", "لأن المستهلك ذو الدخل المنخفض يخصص جانباً مهماً من ميزانيته لها، ويعتبرها خياره الوحيد (البسيط) قبل تحسن دخله", "لأنها مستوردة"], "correct": 2, "hint": "رديئة مو شرط خربانة، بس يعني جودتها اقل من السلع العادية (مثل الخبز مقابل اللحم).", "explanation": "توضح ص 1[cite: 2] أن السلعة الدنيا تحتل نسبة كبيرة في ميزانية الفقير لتلبية احتياجاته الأساسية كخيارات بسيطة ورخيصة نسبياً."},
+            {"id": 52, "page": 6, "category": "علاقة المرونة بالإيراد", "q": "في الحالة الثانية للطلب عالي المرونة، ارتفع السعر من 4 إلى 5 (بوحدة واحدة)، وانخفضت الكمية المطلوبة من 6 إلى 4 (بوحدتين). ماذا حدث للإيراد؟", "options": ["ارتفع من 20 إلى 24", "انخفض من 24 إلى 20", "بقي ثابتاً عند 24", "بقي ثابتاً عند 20"], "correct": 1, "hint": "قبل التغير: 4×6 = 24. بعد التغير: 5×4 = 20. (انخفض).", "explanation": "حسب الجدول ص 5[cite: 6]، TR قبل التغير 24، وبعد التغير 20، فانخفض الإيراد."},
+            {"id": 53, "page": 6, "category": "علاقة المرونة بالإيراد", "q": "في حالة الطلب متكافئ المرونة (Ed=1)، إذا انخفض السعر من 9 إلى 8، وزادت الكمية من 8 إلى 9. ما هو الإيراد الكلي (TR) في الحالتين؟", "options": ["72 في الحالتين (ثابت)", "81 ثم 64", "72 ثم 80", "صفر"], "correct": 0, "hint": "9×8 = 72، و 8×9 = 72. يبقى نفسه.", "explanation": "في جدول ص 6[cite: 7]، TR = 72 قبل التغير، و TR = 72 بعد التغير (ثابت)."},
+            {"id": 54, "page": 7, "category": "الإيراد الحدي", "q": "العلاقة بين الإيراد الكلي والإيراد الحدي متماثلة مع العلاقة بين:", "options": ["التكلفة الثابتة والتكلفة المتغيرة", "الناتج الكلي والناتج الحدي", "الطلب والعرض", "السعر والكمية"], "correct": 1, "hint": "الحدي ويا الكلي يشبه الحدي ويا الكلي بالإنتاج.", "explanation": "في ص 7[cite: 8]، يذكر النص: 'وهكذا فإن العلاقة بين الايراد الكلي والايراد الحدي، متماثلة مع العلاقة بين الناتج الكلي والناتج الحدي'."},
+            {"id": 55, "page": 8, "category": "مرونة القوس", "q": "في حساب مرونة القوس، لماذا كانت إشارة معامل المرونة (-1.49) سالبة؟", "options": ["لأن العلاقة طردية", "بسبب وجود علاقة عكسية بين السعر والكمية المطلوبة (قانون الطلب)", "لأن هناك خطأ في الحساب", "لأن السلعة من سلع جيفين"], "correct": 1, "hint": "السالب بالمرونة السعرية يدل على أن المنحنى نازل ليجوة (علاقة عكسية).", "explanation": "الرياضيات في ص 8[cite: 8] تظهر رقماً سالباً لأن التغير في السعر كان سالباً (انخفاض) بينما الكمية زادت (موجب)، مما يعكس قانون الطلب."}
+        ];
+
+        const FUNNY_CORRECT_REACTIONS = [
+            "عاشت ايدك يالذهب! مرونتك عالية وجوابك يوزن ذهب عيار 24 💰👏",
+            "كفو والله! آدم سميث وجيفين يصفكولك هسة 📈🔥",
+            "عمي أنت قاري الملزمة لو مؤلفها؟ إيرادك الحدي فول اليوم! 😎✨",
+            "بالهدف! لو عايش فيبلن جان كتب اسمك بكتابه 🎯👑",
+            "مضبوط 100%! إجابتك متكافئة المرونة وما بيها أي تضخم 💵✅",
+            "لك عيني شهل فهامة! اقتصاد العراق بأمان دام انت موجود 🚀🇮🇶"
+        ];
+
+        const FUNNY_WRONG_REACTIONS = [
+            "ها خوية وين رايح؟ جفصت بالطلب! اقرأ الشرح جوة 😅📉",
+            "لا يمعود! لو باقي تشتري سلع دنيا أحسنلك من هالجواب 😂🍞",
+            "بوري معدل! الإيراد الكلي مالتك صار صفر.. شوف الشرح الصح 🚨😭",
+            "شبيك يمعود طفت يمك الوطنية؟ شوف ليش الجواب الصح يختلف 🔌😅",
+            "غلط خوية غلط! مرونتك صفر بهذا السؤال.. اقرأ التوضيح ❌📉"
+        ];
+
+        let activeQuestions = [];
+        let currentIndex = 0;
+        let userAnswers = {};
+        let instantFeedback = true;
+        let timerInterval = null;
+        let secondsElapsed = 0;
+        let soundEnabled = true;
+        let currentReviewFilter = 'all';
+        let currentReviewPage = 'all';
+        let showReviewExplanations = true;
+
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('quiz_theme');
+            if (savedTheme) {
+                setTheme(savedTheme);
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+                setTheme('light');
+            } else {
+                setTheme('dark');
+            }
+
+            const savedState = localStorage.getItem('quiz_state_demand');
+            if (savedState) {
+                const btnContainer = document.getElementById('setup-container');
+                const resumeBtn = document.createElement('button');
+                resumeBtn.className = 'w-full py-4 rounded-2xl bg-amber-500/15 text-amber-400 border border-amber-500/30 hover:bg-amber-500/25 text-lg font-black flex items-center justify-center gap-3 shadow-lg mb-4';
+                resumeBtn.innerHTML = '<span>استئناف الاختبار السابق</span><i class="fa-solid fa-clock-rotate-left"></i>';
+                resumeBtn.onclick = resumeQuiz;
+                btnContainer.insertBefore(resumeBtn, btnContainer.firstChild);
+            }
+        });
+
+        function playTone(type) {
+            if (!soundEnabled) return;
+            try {
+                if (!audioCtx) audioCtx = new AudioCtx();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                const now = audioCtx.currentTime;
+                if (type === 'correct') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, now); osc.frequency.setValueAtTime(659.25, now + 0.08); osc.frequency.setValueAtTime(783.99, now + 0.16); gain.gain.setValueAtTime(0.12, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35); osc.start(now); osc.stop(now + 0.35);
+                } else if (type === 'wrong') {
+                    osc.type = 'triangle'; osc.frequency.setValueAtTime(280, now); osc.frequency.setValueAtTime(190, now + 0.12); gain.gain.setValueAtTime(0.14, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3); osc.start(now); osc.stop(now + 0.3);
+                } else if (type === 'click') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(440, now); gain.gain.setValueAtTime(0.05, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06); osc.start(now); osc.stop(now + 0.06);
+                }
+            } catch (e) {}
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('sound-icon');
+            icon.className = soundEnabled ? 'fa-solid fa-volume-high text-emerald-400' : 'fa-solid fa-volume-xmark text-rose-400';
+            if (soundEnabled) playTone('click');
+            saveState();
+        }
+
+        function setTheme(themeName) {
+            document.documentElement.setAttribute('data-theme', themeName);
+            localStorage.setItem('quiz_theme', themeName);
+            const themes = ['dark', 'light', 'gold', 'cyber'];
+            themes.forEach(t => {
+                const btn = document.getElementById(`theme-${t}`);
+                if (t === themeName) {
+                    btn.className = 'px-1.5 py-0.5 rounded text-[10px] font-bold transition-all bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+                } else {
+                    btn.className = 'px-1.5 py-0.5 rounded text-[10px] font-bold transition-all text-muted hover:text-current';
+                }
+            });
+            playTone('click');
+        }
+
+        function switchWindow(windowId) {
+            document.querySelectorAll('.view-window').forEach(w => w.classList.remove('active'));
+            document.getElementById(windowId).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function shuffleArray(arr) {
+            const copy = [...arr];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function saveState() {
+            if (activeQuestions.length === 0) return;
+            const state = { activeQuestions, currentIndex, userAnswers, instantFeedback, secondsElapsed, soundEnabled, currentReviewFilter, currentReviewPage, showReviewExplanations };
+            localStorage.setItem('quiz_state_demand', JSON.stringify(state));
+        }
+
+        function resumeQuiz() {
+            playTone('click');
+            const state = JSON.parse(localStorage.getItem('quiz_state_demand'));
+            if (state) {
+                activeQuestions = state.activeQuestions;
+                currentIndex = state.currentIndex;
+                userAnswers = state.userAnswers;
+                instantFeedback = state.instantFeedback;
+                secondsElapsed = state.secondsElapsed;
+                soundEnabled = state.soundEnabled;
+                startTimerAndAutoSave();
+                buildNavStrip();
+                renderQuestion();
+                updateLiveScore();
+                switchWindow('view-quiz');
+            }
+        }
+
+        function startTimerAndAutoSave() {
+            if (timerInterval) clearInterval(timerInterval);
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                secondsElapsed++;
+                updateTimerDisplay();
+                if (secondsElapsed % 5 === 0) saveState();
+            }, 1000);
+        }
+
+        function startQuiz() {
+            playTone('click');
+            const doShuffleQ = document.getElementById('opt-shuffle-q').checked;
+            const doShuffleA = document.getElementById('opt-shuffle-a').checked;
+            instantFeedback = document.getElementById('opt-instant').checked;
+            const scope = document.getElementById('opt-scope').value;
+
+            let pool = JSON.parse(JSON.stringify(MASTER_QUESTIONS));
+            if (scope === 'p1-3') pool = pool.filter(q => q.page >= 1 && q.page <= 3);
+            else if (scope === 'p4-5') pool = pool.filter(q => q.page >= 4 && q.page <= 5);
+            else if (scope === 'p6-7') pool = pool.filter(q => q.page >= 6 && q.page <= 7);
+
+            if (doShuffleQ || scope === 'quick15' || scope === 'quick30') pool = shuffleArray(pool);
+            if (scope === 'quick15') pool = pool.slice(0, 15);
+            if (scope === 'quick30') pool = pool.slice(0, 30);
+
+            if (doShuffleA) {
+                pool.forEach(item => {
+                    const correctText = item.options[item.correct];
+                    item.options = shuffleArray(item.options);
+                    item.correct = item.options.indexOf(correctText);
+                });
+            }
+
+            activeQuestions = pool;
+            currentIndex = 0;
+            userAnswers = {};
+            secondsElapsed = 0;
+
+            startTimerAndAutoSave();
+            buildNavStrip();
+            renderQuestion();
+            updateLiveScore();
+            switchWindow('view-quiz');
+        }
+
+        function updateTimerDisplay() {
+            const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+            const secs = String(secondsElapsed % 60).padStart(2, '0');
+            document.getElementById('live-timer').textContent = `${mins}:${secs}`;
+        }
+
+        function buildNavStrip() {
+            const strip = document.getElementById('q-nav-strip');
+            strip.innerHTML = '';
+            activeQuestions.forEach((q, idx) => {
+                const btn = document.createElement('button');
+                btn.id = `nav-pill-${idx}`;
+                btn.onclick = () => jumpToQuestion(idx);
+                btn.className = 'w-8 h-8 rounded-lg text-xs font-bold shrink-0 transition-all flex items-center justify-center theme-secondary';
+                btn.textContent = idx + 1;
+                strip.appendChild(btn);
+            });
+        }
+
+        function updateNavStrip() {
+            activeQuestions.forEach((q, idx) => {
+                const btn = document.getElementById(`nav-pill-${idx}`);
+                if (!btn) return;
+                const ans = userAnswers[idx];
+
+                let base = 'w-8 h-8 rounded-lg text-xs font-bold shrink-0 transition-all flex items-center justify-center ';
+                if (idx === currentIndex) base += 'ring-2 ring-amber-400 scale-105 ';
+
+                if (ans === undefined) {
+                    btn.className = base + 'theme-secondary text-muted';
+                } else if (instantFeedback) {
+                    if (ans === q.correct) btn.className = base + 'bg-emerald-500/25 text-emerald-400 border border-emerald-500/40';
+                    else btn.className = base + 'bg-rose-500/25 text-rose-400 border border-rose-500/40';
+                } else {
+                    btn.className = base + 'bg-sky-500/25 text-sky-400 border border-sky-500/40';
+                }
+            });
+
+            const activePill = document.getElementById(`nav-pill-${currentIndex}`);
+            if (activePill) activePill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+
+        function renderQuestion() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            const item = activeQuestions[currentIndex];
+            const total = activeQuestions.length;
+
+            document.getElementById('q-counter-badge').textContent = `سؤال ${currentIndex + 1} من ${total}`;
+            document.getElementById('q-page-text').textContent = `ملزمة ص ${item.page}`;
+            document.getElementById('q-inline-page').innerHTML = `<i class="fa-solid fa-bookmark"></i> ملزمة ص ${item.page}`;
+            document.getElementById('q-category-label').textContent = item.category;
+
+            const pct = Math.round(((currentIndex + 1) / total) * 100);
+            document.getElementById('quiz-progress-bar').style.width = `${pct}%`;
+
+            document.getElementById('q-text').innerHTML = `
+                <span class="inline-block px-2 py-0.5 rounded-md text-xs font-extrabold bg-amber-500/15 text-amber-400 border border-amber-500/30 ml-1.5 align-middle">ص ${item.page}</span>
+                <span>${item.q}</span>
+            `;
+
+            document.getElementById('hint-box').classList.remove('open');
+            document.getElementById('hint-text').textContent = item.hint;
+
+            const fbBox = document.getElementById('feedback-box');
+            fbBox.classList.remove('open');
+
+            const optContainer = document.getElementById('options-container');
+            optContainer.innerHTML = '';
+            const arabicLetters = ['أ', 'ب', 'ج', 'د'];
+            const existingAnswer = userAnswers[currentIndex];
+
+            item.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                let classes = 'option-item w-full text-right p-4 rounded-2xl flex items-center justify-between gap-3 font-bold text-sm sm:text-base ';
+
+                if (existingAnswer !== undefined) {
+                    if (instantFeedback) {
+                        classes += 'disabled cursor-default ';
+                        if (existingAnswer !== -1) {
+                            if (idx === item.correct) classes += 'correct ';
+                            else if (idx === existingAnswer) classes += 'wrong ';
+                        } else {
+                            if (idx === item.correct) classes += 'correct ';
+                        }
+                    } else {
+                        if (idx === existingAnswer) classes += 'selected ';
+                    }
+                }
+
+                btn.className = classes;
+                btn.onclick = () => selectOption(idx);
+
+                let statusIcon = '';
+                if (existingAnswer !== undefined && instantFeedback) {
+                    if (idx === item.correct) statusIcon = '<i class="fa-solid fa-circle-check text-emerald-400 text-lg shrink-0"></i>';
+                    else if (idx === existingAnswer && existingAnswer !== -1) statusIcon = '<i class="fa-solid fa-circle-xmark text-rose-400 text-lg shrink-0"></i>';
+                } else if (existingAnswer === idx && !instantFeedback && existingAnswer !== -1) {
+                    statusIcon = '<i class="fa-solid fa-circle-dot text-emerald-400 text-lg shrink-0"></i>';
+                }
+
+                btn.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-xl theme-card flex items-center justify-center text-xs font-black shrink-0">${arabicLetters[idx]}</span>
+                        <span class="leading-relaxed">${optText}</span>
+                    </div>
+                    ${statusIcon}
+                `;
+                optContainer.appendChild(btn);
+            });
+
+            if (existingAnswer !== undefined && instantFeedback) {
+                showInlineFeedback(existingAnswer === item.correct, item, existingAnswer === -1);
+            }
+
+            document.getElementById('btn-prev').disabled = (currentIndex === 0);
+            document.getElementById('btn-next-label').textContent = (currentIndex === total - 1) ? 'إنهاء وعرض النتيجة' : 'السؤال التالي';
+            updateNavStrip();
+        }
+
+        function toggleHint() {
+            playTone('click');
+            document.getElementById('hint-box').classList.toggle('open');
+        }
+
+        function revealExplanationDirectly() {
+            playTone('click');
+            const fbBox = document.getElementById('feedback-box');
+            if (fbBox.classList.contains('open')) {
+                fbBox.classList.remove('open');
+                return;
+            }
+
+            if (userAnswers[currentIndex] === undefined) {
+                userAnswers[currentIndex] = -1; 
+                saveState();
+                updateLiveScore();
+                renderQuestion(); 
+                return;
+            }
+
+            const item = activeQuestions[currentIndex];
+            const existingAnswer = userAnswers[currentIndex];
+            const isCorrect = (existingAnswer !== undefined && existingAnswer !== -1) ? (existingAnswer === item.correct) : null;
+            showInlineFeedback(isCorrect, item, existingAnswer === -1);
+        }
+
+        function selectOption(optIdx) {
+            if (instantFeedback && userAnswers[currentIndex] !== undefined) return;
+            const item = activeQuestions[currentIndex];
+            userAnswers[currentIndex] = optIdx;
+
+            if (instantFeedback) playTone(optIdx === item.correct ? 'correct' : 'wrong');
+            else playTone('click');
+
+            updateLiveScore();
+            saveState();
+            renderQuestion();
+        }
+
+        function showInlineFeedback(isCorrect, item, isRevealedWithoutAnswering) {
+            const fbBox = document.getElementById('feedback-box');
+            const fbHeader = document.getElementById('feedback-header');
+            const fbIcon = document.getElementById('feedback-icon');
+            const fbText = document.getElementById('feedback-text');
+            const fbPage = document.getElementById('feedback-page-ref');
+            const fbCorrectAns = document.getElementById('feedback-correct-answer');
+            const fbExpTitle = document.getElementById('explanation-title');
+            const fbExpText = document.getElementById('feedback-explanation-text');
+            const arabicLetters = ['أ', 'ب', 'ج', 'د'];
+            const correctOptionFormatted = `(${arabicLetters[item.correct]}) ${item.options[item.correct]}`;
+
+            if (isRevealedWithoutAnswering) {
+                fbBox.className = 'inline-collapse open rounded-2xl overflow-hidden theme-secondary border border-amber-500/40';
+                fbHeader.className = 'px-4 py-3 flex flex-wrap items-center justify-between gap-2 bg-amber-500/15 text-amber-300 border-b border-amber-500/25';
+                fbIcon.className = 'fa-solid fa-lightbulb text-xl text-amber-400';
+                fbText.textContent = 'كشفنالك الجواب الصحيح (تُحسب إجابة خاطئة) 📖👇';
+            } else if (isCorrect) {
+                fbBox.className = 'inline-collapse open rounded-2xl overflow-hidden theme-secondary border border-emerald-500/40';
+                fbHeader.className = 'px-4 py-3 flex flex-wrap items-center justify-between gap-2 bg-emerald-500/15 text-emerald-300 border-b border-emerald-500/25';
+                fbIcon.className = 'fa-solid fa-face-grin-stars text-xl text-emerald-400';
+                fbText.textContent = FUNNY_CORRECT_REACTIONS[currentIndex % FUNNY_CORRECT_REACTIONS.length];
+            } else {
+                fbBox.className = 'inline-collapse open rounded-2xl overflow-hidden theme-secondary border border-rose-500/40';
+                fbHeader.className = 'px-4 py-3 flex flex-wrap items-center justify-between gap-2 bg-rose-500/15 text-rose-300 border-b border-rose-500/25';
+                fbIcon.className = 'fa-solid fa-face-dizzy text-xl text-rose-400';
+                fbText.textContent = FUNNY_WRONG_REACTIONS[currentIndex % FUNNY_WRONG_REACTIONS.length];
+            }
+
+            fbPage.innerHTML = `<i class="fa-solid fa-file-lines"></i> ملزمة ص ${item.page}`;
+            fbCorrectAns.textContent = correctOptionFormatted;
+            fbExpTitle.textContent = `💡 ليش هذا الجواب هو الصح؟ (ص ${item.page}):`;
+            fbExpText.textContent = item.explanation;
+        }
+
+        function updateLiveScore() {
+            let correctCount = 0;
+            let wrongCount = 0;
+            Object.keys(userAnswers).forEach(qIdx => {
+                const ans = userAnswers[qIdx];
+                const q = activeQuestions[qIdx];
+                if (ans === q.correct) correctCount++;
+                else if (ans === -1 || ans !== q.correct) wrongCount++;
+            });
+            document.getElementById('live-correct').textContent = correctCount;
+            document.getElementById('live-wrong').textContent = instantFeedback ? wrongCount : Object.keys(userAnswers).length;
+        }
+
+        function prevQuestion() {
+            if (currentIndex > 0) {
+                playTone('click');
+                currentIndex--;
+                saveState();
+                renderQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            playTone('click');
+            if (currentIndex < activeQuestions.length - 1) {
+                currentIndex++;
+                saveState();
+                renderQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function jumpToQuestion(idx) {
+            playTone('click');
+            currentIndex = idx;
+            saveState();
+            renderQuestion();
+        }
+
+        function finishQuiz() {
+            const total = activeQuestions.length;
+            const answeredCount = Object.keys(userAnswers).length;
+            
+            if (answeredCount < total) {
+                const confirmFinish = confirm(`لكيتك مجاوب بس ${answeredCount} من أصل ${total} سؤال! متأكد تريد تسلم الدفتر؟ (الأسئلة الباقية تنحسب غلط)`);
+                if (!confirmFinish) return;
+            }
+
+            if (timerInterval) clearInterval(timerInterval);
+            playTone('correct');
+
+            let correct = 0;
+            const pageStats = {};
+
+            activeQuestions.forEach((q, idx) => {
+                if (!pageStats[q.page]) pageStats[q.page] = { total: 0, correct: 0 };
+                pageStats[q.page].total++;
+                if (userAnswers[idx] === q.correct) {
+                    correct++;
+                    pageStats[q.page].correct++;
+                }
+            });
+
+            const wrongOrSkipped = total - correct;
+            const percent = Math.round((correct / total) * 100);
+
+            document.getElementById('res-percent').textContent = `${percent}%`;
+            document.getElementById('res-correct').textContent = `${correct} / ${total}`;
+            document.getElementById('res-wrong').textContent = wrongOrSkipped;
+            document.getElementById('res-time').textContent = document.getElementById('live-timer').textContent;
+
+            const emojiEl = document.getElementById('rank-emoji');
+            const titleEl = document.getElementById('rank-title');
+            const descEl = document.getElementById('rank-desc');
+
+            if (percent >= 90) { emojiEl.textContent = '📈👑'; titleEl.textContent = 'خبير اقتصادي بمرتبة شرف'; descEl.textContent = 'ختمت علم الطلب والمرونة من ص 1 لحد ص 7! وضعك بالسليم وتستاهل تصير دكتور بالاقتصاد!'; }
+            else if (percent >= 75) { emojiEl.textContent = '📊🔥'; titleEl.textContent = 'محلل أسواق محترف'; descEl.textContent = 'مسيطر عالمرونة والإيرادات! بس رادلك نظرة خفيفة عالأخطاء وشرحها حتى تصير خبير رسمي.'; }
+            else if (percent >= 50) { emojiEl.textContent = '📉😅'; titleEl.textContent = 'طالب اقتصاد يحاول ينجح'; descEl.textContent = 'ناجح بس يرادلك تراجع شرح الإجابات الصحيحة وتشوف وين خطأت بالمرونة.'; }
+            else if (percent >= 25) { emojiEl.textContent = '🍞🌾'; titleEl.textContent = 'مستهلك للسلع الدنيا'; descEl.textContent = 'خوية بعدك تستهلك سلع جيفين! الحك على روحك وافتح مراجعة الأجوبة والشرح جوة قبل الامتحان.'; }
+            else { emojiEl.textContent = '💸😭'; titleEl.textContent = 'طلب عديم المرونة (صفر)'; descEl.textContent = 'كلشي ما قاري يمعود! فوت على مراجعة الإجابات واقرأ الشرح!'; }
+
+            const grid = document.getElementById('page-breakdown-grid');
+            grid.innerHTML = '';
+            Object.keys(pageStats).sort((a, b) => Number(a) - Number(b)).forEach(p => {
+                const st = pageStats[p];
+                const pPct = Math.round((st.correct / st.total) * 100);
+                const badgeColor = pPct >= 75 ? 'text-emerald-400' : (pPct >= 50 ? 'text-amber-400' : 'text-rose-400');
+                const card = document.createElement('div');
+                card.className = 'theme-card rounded-xl p-2.5 flex items-center justify-between';
+                card.innerHTML = `<span class="font-bold">ملزمة ص ${p}</span><span class="font-black ${badgeColor}">${st.correct}/${st.total} (${pPct}%)</span>`;
+                grid.appendChild(card);
+            });
+
+            localStorage.removeItem('quiz_state_demand');
+            switchWindow('view-results');
+        }
+
+        function openReviewWindow(filterType) {
+            playTone('click');
+            currentReviewFilter = filterType || 'all';
+            currentReviewPage = 'all';
+            document.getElementById('rev-page-select').value = 'all';
+            renderReviewList();
+            switchWindow('view-review');
+        }
+
+        function toggleAllReviewExplanations() {
+            playTone('click');
+            showReviewExplanations = !showReviewExplanations;
+            document.getElementById('toggle-rev-exp-text').textContent = showReviewExplanations ? 'إخفاء الشرح' : 'إظهار الشرح';
+            renderReviewList();
+        }
+
+        function filterReview(type) { playTone('click'); currentReviewFilter = type; renderReviewList(); }
+        function filterReviewByPage(pageVal) { playTone('click'); currentReviewPage = pageVal; renderReviewList(); }
+
+        function renderReviewList() {
+            const container = document.getElementById('review-list-container');
+            container.innerHTML = '';
+            let totalCount = activeQuestions.length; let correctCount = 0; let wrongCount = 0;
+            activeQuestions.forEach((q, idx) => { if (userAnswers[idx] === q.correct) correctCount++; else wrongCount++; });
+            document.getElementById('count-all').textContent = totalCount; document.getElementById('count-correct').textContent = correctCount; document.getElementById('count-wrong').textContent = wrongCount;
+
+            ['all', 'correct', 'wrong'].forEach(t => {
+                document.getElementById(`rev-filter-${t}`).className = (t === currentReviewFilter) ? 'px-2 py-1 rounded-lg text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shrink-0' : 'px-2 py-1 rounded-lg text-[10px] font-bold theme-secondary text-muted shrink-0';
+            });
+
+            const arabicLetters = ['أ', 'ب', 'ج', 'د'];
+            let shownCount = 0;
+
+            activeQuestions.forEach((q, idx) => {
+                const uAns = userAnswers[idx];
+                const isCorrect = (uAns === q.correct);
+                if (currentReviewFilter === 'correct' && !isCorrect) return;
+                if (currentReviewFilter === 'wrong' && isCorrect) return;
+                if (currentReviewPage !== 'all' && String(q.page) !== String(currentReviewPage)) return;
+
+                shownCount++;
+                const card = document.createElement('div');
+                card.className = 'theme-card rounded-2xl p-5 border-r-4 ' + (isCorrect ? 'border-r-emerald-500' : 'border-r-rose-500');
+
+                let statusBadge = '';
+                if (isCorrect) statusBadge = '<span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-500/20 text-emerald-400"><i class="fa-solid fa-check ml-1"></i>إجابتك صحيحة</span>';
+                else if (uAns === -1) statusBadge = '<span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-500/20 text-rose-400"><i class="fa-solid fa-eye ml-1"></i>تم كشف الحل (خطأ)</span>';
+                else if (uAns === undefined) statusBadge = '<span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500/20 text-amber-400"><i class="fa-solid fa-minus ml-1"></i>متروك بدون حل</span>';
+                else statusBadge = '<span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-500/20 text-rose-400"><i class="fa-solid fa-xmark ml-1"></i>إجابتك خاطئة</span>';
+
+                let optionsHtml = '';
+                q.options.forEach((opt, oIdx) => {
+                    let optStyle = 'theme-secondary text-muted opacity-80';
+                    let badge = '';
+                    if (oIdx === q.correct) { optStyle = 'bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 font-bold'; badge = '<span class="text-xs font-extrabold text-emerald-400 shrink-0"><i class="fa-solid fa-circle-check ml-1"></i>الجواب الصحيح</span>'; } 
+                    else if (oIdx === uAns && !isCorrect && uAns !== -1) { optStyle = 'bg-rose-500/15 border border-rose-500/40 text-rose-300 font-bold'; badge = '<span class="text-xs font-extrabold text-rose-400 shrink-0"><i class="fa-solid fa-circle-xmark ml-1"></i>اختيارك</span>'; }
+                    optionsHtml += `<div class="p-3 rounded-xl flex items-center justify-between gap-2 text-xs sm:text-sm ${optStyle}"><div class="flex items-center gap-2"><span class="font-black">${arabicLetters[oIdx]})</span><span>${opt}</span></div>${badge}</div>`;
+                });
+
+                const explanationBlockHtml = showReviewExplanations ? `<div class="mt-3 space-y-2"><div class="rounded-xl explanation-card px-4 py-3 text-xs sm:text-sm flex items-start gap-2.5"><i class="fa-solid fa-book-open-reader text-emerald-400 mt-1 text-base shrink-0"></i><div><span class="font-black text-emerald-400 block mb-1">📖 شرح الإجابة الصحيحة (ملزمة ص ${q.page}):</span><p class="leading-relaxed">${q.explanation}</p></div></div><div class="rounded-xl bg-amber-500/10 border border-amber-500/25 px-3.5 py-2 text-xs text-amber-300 flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles text-amber-400 shrink-0"></i><div><span class="font-bold">تغشيشة سريعة للحفظ: </span><span>${q.hint}</span></div></div></div>` : '';
+
+                card.innerHTML = `<div class="flex flex-wrap items-center justify-between gap-2 mb-3"><div class="flex items-center gap-2"><span class="px-2.5 py-1 rounded-lg theme-secondary text-xs font-black">سؤال #${idx + 1}</span><span class="page-badge"><i class="fa-solid fa-file-lines"></i> ص ${q.page}</span><span class="text-xs text-muted font-bold">${q.category}</span></div>${statusBadge}</div><h3 class="font-extrabold text-base sm:text-lg mb-3 leading-relaxed">${q.q}</h3><div class="space-y-2">${optionsHtml}</div>${explanationBlockHtml}`;
+                container.appendChild(card);
+            });
+
+            if (shownCount === 0) container.innerHTML = `<div class="theme-card rounded-2xl p-8 text-center text-muted"><i class="fa-solid fa-box-open text-3xl mb-2 text-amber-400"></i><p class="font-bold">ماكو أسئلة تطابق هذا الفلتر حالياً! جرب تختار "الكل".</p></div>`;
+        }
+    </script>
+</body>
+</html>
